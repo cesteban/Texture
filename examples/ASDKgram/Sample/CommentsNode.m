@@ -19,8 +19,13 @@
 
 #import "CommentsNode.h"
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
 #define INTER_COMMENT_SPACING 5
 #define NUM_COMMENTS_TO_SHOW  3
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
 
 @implementation CommentsNode
 {
@@ -43,12 +48,29 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   return [ASStackLayoutSpec
           stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
           spacing:INTER_COMMENT_SPACING
           justifyContent:ASStackLayoutJustifyContentStart
           alignItems:ASStackLayoutAlignItemsStretch
           children:[_commentNodes copy]];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[[ASStackLayoutSpec
+            verticalStackLayoutSpec]
+            withSpacing:INTER_COMMENT_SPACING]
+            withChildren:[_commentNodes copy]];
 }
 
 #pragma mark - Instance Methods

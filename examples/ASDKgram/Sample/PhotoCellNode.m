@@ -21,6 +21,7 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <AsyncDisplayKit/ASDisplayNode+Beta.h>
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
 
 #import "Utilities.h"
 #import "CommentsNode.h"
@@ -30,6 +31,9 @@
 // There are many ways to format ASLayoutSpec code.  In this example, we offer two different formats:
 // A flatter, more ordinary Objective-C style; or a more structured, "visually" declarative style.
 #define FLAT_LAYOUT 0
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
 
 #define DEBUG_PHOTOCELL_LAYOUT  0
 
@@ -123,6 +127,15 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   // There are many ways to format ASLayoutSpec code.  In this example, we offer two different formats:
   // A flatter, more ordinary Objective-C style; or a more structured, "visually" declarative style.
   if (FLAT_LAYOUT) {
@@ -181,7 +194,7 @@
     return verticalStack;
     
   } else {  // The style below is the more structured, visual, and declarative style.  It is functionally identical.
-    
+
     return
     // Main stack
     [ASStackLayoutSpec
@@ -266,6 +279,54 @@
                  ]
             ]];
   }
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return
+  // Main stack
+  [[ASStackLayoutSpec
+    verticalStackLayoutSpec]
+    withChildren:@[
+                  // Header stack
+                  [[[[ASStackLayoutSpec
+                      horizontalStackLayoutSpec]
+                      alignItems:ASStackLayoutAlignItemsCenter]
+                      withChildren:@[
+                                   // Avatar image with inset
+                                   [[_userAvatarImageNode
+                                     withPreferredSize:CGSizeMake(USER_IMAGE_HEIGHT, USER_IMAGE_HEIGHT)]
+                                     withInset:InsetForAvatar],
+
+                                   // User and photo location stack
+                                   [[[ASStackLayoutSpec
+                                      verticalStackLayoutSpec]
+                                      withChildren:_photoLocationLabel.attributedText ? @[[_userNameLabel withFlexShrink:1.0], [_photoLocationLabel withFlexShrink:1.0]] : @[[_userNameLabel withFlexShrink:1.0]]]
+                                      withFlexShrink:1.0],
+
+                                   // Spacer between user / photo location and photo time inverval
+                                   [ASLayoutSpec spacer],
+
+                                   // Photo and time interval node
+                                   [_photoTimeIntervalSincePostLabel withSpacingBefore:HORIZONTAL_BUFFER] // to remove double spaces around spacer
+                                   ]]
+                      withInset:InsetForHeader],
+
+                  // Center photo with ratio
+                  [_photoImageNode withRatio:1.0],
+
+                  // Footer stack with inset
+                  [[[[ASStackLayoutSpec
+                      verticalStackLayoutSpec]
+                      withSpacing:VERTICAL_BUFFER]
+                      withChildren:@[
+                                   _photoLikesLabel,
+                                   _photoDescriptionLabel,
+                                   _photoCommentsNode
+                                   ]]
+                   withInset:InsetForFooter]
+                  ]
+   ];
 }
 
 #pragma mark - Instance Methods

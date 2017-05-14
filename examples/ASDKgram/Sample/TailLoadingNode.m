@@ -8,6 +8,11 @@
 
 #import "TailLoadingNode.h"
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
+
 @interface TailLoadingNode ()
 @property (nonatomic, strong) ASDisplayNode *activityIndicatorNode;
 @end
@@ -29,7 +34,22 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   return [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY child:self.activityIndicatorNode];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [self.activityIndicatorNode centerWithCenteringOptions:ASCenterLayoutSpecCenteringXY
+                                                  sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY];
 }
 
 @end
