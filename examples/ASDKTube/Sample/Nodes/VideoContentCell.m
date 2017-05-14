@@ -23,6 +23,11 @@
 
 #import "Utilities.h"
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 0
+
 #define AVATAR_IMAGE_HEIGHT     30
 #define HORIZONTAL_BUFFER       10
 #define VERTICAL_BUFFER         5
@@ -91,14 +96,23 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   CGFloat fullWidth = [UIScreen mainScreen].bounds.size.width;
-  
+
   _videoPlayerNode.style.width = ASDimensionMakeWithPoints(fullWidth);
   _videoPlayerNode.style.height = ASDimensionMakeWithPoints(fullWidth * 9 / 16);
-  
+
   _avatarNode.style.width = ASDimensionMakeWithPoints(AVATAR_IMAGE_HEIGHT);
   _avatarNode.style.height = ASDimensionMakeWithPoints(AVATAR_IMAGE_HEIGHT);
-  
+
   _likeButtonNode.style.width = ASDimensionMakeWithPoints(50.0);
   _likeButtonNode.style.height = ASDimensionMakeWithPoints(26.0);
 
@@ -123,6 +137,44 @@
   verticalStack.alignItems = ASStackLayoutAlignItemsStretch;
   verticalStack.children = @[headerInset, _videoPlayerNode, bottomControlsInset];
   return verticalStack;
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  CGFloat fullWidth = [UIScreen mainScreen].bounds.size.width;
+  return [[[ASStackLayoutSpec
+            verticalStackLayoutSpec]
+            withAlignItems:ASStackLayoutAlignItemsStretch]
+            withChildren:@[
+                           // Header
+                           [[[[[ASStackLayoutSpec
+                               horizontalStackLayoutSpec]
+                               withSpacing:HORIZONTAL_BUFFER]
+                               withAlignItems:ASStackLayoutAlignItemsCenter]
+                               withChildren:@[
+                                              [[_avatarNode
+                                                withWidth:ASDimensionMakeWithPoints(AVATAR_IMAGE_HEIGHT)]
+                                                withHeight:ASDimensionMakeWithPoints(AVATAR_IMAGE_HEIGHT)],
+                                              _titleNode
+                                              ]]
+                               withInset:UIEdgeInsetsMake(HORIZONTAL_BUFFER, HORIZONTAL_BUFFER, HORIZONTAL_BUFFER, HORIZONTAL_BUFFER)],
+
+                           // Video Player
+                           [[_videoPlayerNode
+                             withWidth:ASDimensionMakeWithPoints(fullWidth)]
+                             withHeight:ASDimensionMakeWithPoints(fullWidth * 9 / 16)],
+
+                           // Bottom Controls
+                           [[[[[ASStackLayoutSpec horizontalStackLayoutSpec]
+                              withSpacing:HORIZONTAL_BUFFER]
+                              withAlignItems:ASStackLayoutAlignItemsCenter]
+                              withChildren:@[
+                                             [[_likeButtonNode
+                                               withWidth:ASDimensionMakeWithPoints(50.0)]
+                                               withHeight:ASDimensionMakeWithPoints(26.0)]
+                                             ]]
+                              withInset:UIEdgeInsetsMake(HORIZONTAL_BUFFER, HORIZONTAL_BUFFER, HORIZONTAL_BUFFER, HORIZONTAL_BUFFER)]
+                           ]];
 }
 
 - (void)setMuteButtonIcon
