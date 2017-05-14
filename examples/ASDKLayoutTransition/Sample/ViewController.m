@@ -19,6 +19,11 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
+
 #pragma mark - TransitionNode
 
 #define USE_CUSTOM_LAYOUT_TRANSITION 0
@@ -93,20 +98,47 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   ASTextNode *nextTextNode = self.enabled ? self.textNodeTwo : self.textNodeOne;
   nextTextNode.style.flexGrow = 1.0;
   nextTextNode.style.flexShrink = 1.0;
-  
+
   ASStackLayoutSpec *horizontalStackLayout = [ASStackLayoutSpec horizontalStackLayoutSpec];
   horizontalStackLayout.children = @[nextTextNode];
-  
+
   self.buttonNode.style.alignSelf = ASStackLayoutAlignSelfCenter;
-  
+
   ASStackLayoutSpec *verticalStackLayout = [ASStackLayoutSpec verticalStackLayoutSpec];
   verticalStackLayout.spacing = 10.0;
   verticalStackLayout.children = @[horizontalStackLayout, self.buttonNode];
-  
+
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(15.0, 15.0, 15.0, 15.0) child:verticalStackLayout];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  ASTextNode *nextTextNode = self.enabled ? self.textNodeTwo : self.textNodeOne;
+  return [[[[ASStackLayoutSpec
+            verticalStackLayoutSpec]
+            withSpacing:10.0]
+            withChildren:@[
+                           [[ASStackLayoutSpec
+                             horizontalStackLayoutSpec]
+                             withChildren:@[[[nextTextNode
+                                              withFlexGrow:1.0]
+                                              withFlexShrink:1.0]
+                                            ]],
+                           [self.buttonNode withAlignSelf:ASStackLayoutAlignSelfCenter]
+                           ]]
+            withInset:UIEdgeInsetsMake(15.0, 15.0, 15.0, 15.0)];
 }
 
 
