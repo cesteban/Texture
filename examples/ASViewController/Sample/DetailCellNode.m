@@ -17,6 +17,10 @@
 
 #import "DetailCellNode.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 0
 
 @implementation DetailCellNode
 
@@ -39,7 +43,21 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+    if (FLUENT_LAYOUT) {
+      return [self fluentLayoutSpecThatFits:constrainedSize];
+    } else {
+      return [self classicLayoutSpecThatFits:constrainedSize];
+    }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
     return [ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0 child:self.imageNode];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+    return [self.imageNode withRatio:1.0];
 }
 
 - (void)layoutDidFinish

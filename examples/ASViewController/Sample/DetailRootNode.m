@@ -19,6 +19,10 @@
 #import "DetailCellNode.h"
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 0
 
 static const NSInteger kImageHeight = 200;
 
@@ -40,7 +44,7 @@ static const NSInteger kImageHeight = 200;
     self = [super init];
     if (self) {
         // Enable automaticallyManagesSubnodes so the first time the layout pass of the node is happening all nodes that are referenced
-        // in the laaout specification within layoutSpecThatFits: will be added automatically
+        // in the layout specification within layoutSpecThatFits: will be added automatically
         self.automaticallyManagesSubnodes = YES;
         
         _imageCategory = imageCategory;
@@ -66,7 +70,21 @@ static const NSInteger kImageHeight = 200;
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+    if (FLUENT_LAYOUT) {
+      return [self fluentLayoutSpecThatFits:constrainedSize];
+    } else {
+      return [self classicLayoutSpecThatFits:constrainedSize];
+    }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
     return [ASWrapperLayoutSpec wrapperWithLayoutElement:self.collectionNode];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+    return [self.collectionNode wrap];
 }
 
 #pragma mark - ASCollectionDataSource
