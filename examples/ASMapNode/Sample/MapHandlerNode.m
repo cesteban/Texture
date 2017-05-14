@@ -20,6 +20,10 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <AsyncDisplayKit/UIImage+ASConvenience.h>
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
 
 @interface MapHandlerNode () <ASEditableTextNodeDelegate, MKMapViewDelegate>
 
@@ -112,22 +116,24 @@
 }
 
 /** 
- * ---------------------------------ASStackLayoutSpec--------------------------------
- * |  ------------------------------ASInsetLayoutSpec-----------------------------  |
- * |  |  ---------------------------ASStackLayoutSpec--------------------------  |  |
- * |  |  |  -----------------ASStackLayoutSpec----------------                |  |  |
- * |  |  |  |  --------------ASStackLayoutSpec-------------  |                |  |  |
- * |  |  |  |  |  ASEditableTextNode  ASEditableTextNode  |  |                |  |  |
- * |  |  |  |  --------------------------------------------  |                |  |  |
- * |  |  |  |  --------------ASStackLayoutSpec-------------  |  ASButtonNode  |  |  |
- * |  |  |  |  |  ASEditableTextNode  ASEditableTextNode  |  |                |  |  |
- * |  |  |  |  --------------------------------------------  |                |  |  |
- * |  |  |  --------------------------------------------------                |  |  |
- * |  |  ----------------------------------------------------------------------  |  |
- * |  ----------------------------------------------------------------------------  |
- * |                                  ASButtonNode                                  |
- * |                                    ASMapNode                                   |
- * ----------------------------------------------------------------------------------
+ * ------------------------------------ASStackLayoutSpec-----------------------------------
+ * |  ---------------------------------ASInsetLayoutSpec--------------------------------  |
+ * |  |  ------------------------------ASStackLayoutSpec-----------------------------  |  |
+ * |  |  |  ---------------------------ASStackLayoutSpec--------------------------  |  |  |
+ * |  |  |  |  -----------------ASStackLayoutSpec----------------                |  |  |  |
+ * |  |  |  |  |  --------------ASStackLayoutSpec-------------  |                |  |  |  |
+ * |  |  |  |  |  |  ASEditableTextNode  ASEditableTextNode  |  |                |  |  |  |
+ * |  |  |  |  |  --------------------------------------------  |                |  |  |  |
+ * |  |  |  |  |  --------------ASStackLayoutSpec-------------  |  ASButtonNode  |  |  |  |
+ * |  |  |  |  |  |  ASEditableTextNode  ASEditableTextNode  |  |                |  |  |  |
+ * |  |  |  |  |  --------------------------------------------  |                |  |  |  |
+ * |  |  |  |  --------------------------------------------------                |  |  |  |
+ * |  |  |  ----------------------------------------------------------------------  |  |  |
+ * |  |  |                               ASButtonNode                               |  |  |
+ * |  |  ----------------------------------------------------------------------------  |  |
+ * |  ----------------------------------------------------------------------------------  |
+ * |                                       ASMapNode                                      |
+ * ----------------------------------------------------------------------------------------
  *
  *  This diagram was created by setting a breakpoint on the returned `layoutSpec`
  *  and calling "po [layoutSpec asciiArtString]" in the debugger.
@@ -135,6 +141,15 @@
 #define SPACING 5
 #define HEIGHT 30
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
 {
   _latEditableNode.style.width      = ASDimensionMake(@"50%");
   _lonEditableNode.style.width      = ASDimensionMake(@"50%");
@@ -189,6 +204,62 @@
                                                                          children:@[insetSpec, _mapNode]];
   
   return layoutSpec;
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[[ASStackLayoutSpec
+            verticalStackLayoutSpec]
+            withSpacing:SPACING]
+            withChildren:@[
+                           // Header Vertical Stack
+                           [[[[ASStackLayoutSpec
+                               verticalStackLayoutSpec]
+                               withSpacing:SPACING]
+                               withChildren:@[
+                                              // dashboardSpec
+                                              [[[[ASStackLayoutSpec
+                                                 horizontalStackLayoutSpec]
+                                                 withSpacing:SPACING]
+                                                 withChildren:@[
+                                                              // lonlatConfigSpec
+                                                              [[[[ASStackLayoutSpec
+                                                                  verticalStackLayoutSpec]
+                                                                  withSpacing:SPACING]
+                                                                  withChildren:@[
+                                                                                 // lonlatSpec
+                                                                                 [[[[ASStackLayoutSpec
+                                                                                     horizontalStackLayoutSpec]
+                                                                                     withSpacing:SPACING]
+                                                                                     withAlignItems:ASStackLayoutAlignItemsCenter]
+                                                                                     withChildren:@[
+                                                                                                    [_latEditableNode withWidth:ASDimensionMake(@"50%")],
+                                                                                                    [_lonEditableNode withWidth:ASDimensionMake(@"50%")]
+                                                                                                    ]],
+                                                                                 // deltaLonlatSpec
+                                                                                 [[[[[ASStackLayoutSpec
+                                                                                      horizontalStackLayoutSpec]
+                                                                                      withSpacing:SPACING]
+                                                                                      withJustifyContent:ASStackLayoutJustifyContentSpaceBetween]
+                                                                                      withAlignItems:ASStackLayoutAlignItemsCenter]
+                                                                                      withChildren:@[
+                                                                                                     [_deltaLatEditableNode withWidth:ASDimensionMake(@"50%")],
+                                                                                                     [_deltaLonEditableNode withWidth:ASDimensionMake(@"50%")]
+                                                                                                     ]]
+                                                                                 ]]
+                                                                  withFlexGrow:1.0],
+
+                                                              _updateRegionButton
+                                                              ]]
+                                                 withFlexGrow:1.0],
+
+                                              [_liveMapToggleButton withMaxHeight:ASDimensionMake(HEIGHT)]
+                                              ]]
+                               withInset:UIEdgeInsetsMake(40, 10, 0, 10)],
+
+                           // Map Node
+                           [_mapNode withFlexGrow:1.0]
+                           ]];
 }
 
 #pragma mark - Button Actions
