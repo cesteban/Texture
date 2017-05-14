@@ -21,6 +21,11 @@
 #import <AsyncDisplayKit/ASInsetLayoutSpec.h>
 #import <AsyncDisplayKit/ASCenterLayoutSpec.h>
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 0
+
 static CGFloat kInsets = 15.0;
 
 @interface SupplementaryNode ()
@@ -45,12 +50,28 @@ static CGFloat kInsets = 15.0;
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   ASCenterLayoutSpec *center = [[ASCenterLayoutSpec alloc] init];
   center.centeringOptions = ASCenterLayoutSpecCenteringXY;
   center.child = self.textNode;
   UIEdgeInsets insets = UIEdgeInsetsMake(kInsets, kInsets, kInsets, kInsets);
-  
+
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:insets child:center];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[self.textNode
+           centerWithCenteringOptions:ASCenterLayoutSpecCenteringXY]
+           withInset:UIEdgeInsetsMake(kInsets, kInsets, kInsets, kInsets)];
 }
 
 #pragma mark - Text Formatting
