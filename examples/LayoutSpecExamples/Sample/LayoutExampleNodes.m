@@ -257,19 +257,17 @@
 
 - (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
 {
-  // The ASAbsoluteLayoutSpec has no fluent extensions, since they won't add anything to the current construction syntax.
-  // However, note how the spec still benefits from the possibility of inlining style modifications directly in the
-  // specification of the children array.
-  return [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit
-                                                   children:@[
-                                                              [[_photoNode
-                                                                withPreferredSize:CGSizeMake(150, 150)]
-                                                               withLayoutPosition:CGPointMake(40 / 2.0, 40 / 2.0)],
+  return [[[[ASAbsoluteLayoutSpec alloc] init]
+           withSizing:ASAbsoluteLayoutSpecSizingSizeToFit]
+           withChildren:@[
+                          [[_photoNode
+                            withPreferredSize:CGSizeMake(150, 150)]
+                            withLayoutPosition:CGPointMake(40 / 2.0, 40 / 2.0)],
 
-                                                              [[_iconNode
-                                                                withPreferredSize:CGSizeMake(40, 40)]
-                                                                withLayoutPosition:CGPointMake(150, 0)]
-                                                              ]];
+                          [[_iconNode
+                            withPreferredSize:CGSizeMake(40, 40)]
+                            withLayoutPosition:CGPointMake(150, 0)]
+                          ]];
 }
 
 @end
