@@ -4,5 +4,6 @@ target 'ASDKgram-Swift' do
     use_frameworks!
 
     pod 'Texture', '>= 2.0'
+	pod 'ASDKFluentExtensions', '~> 0.4'
 
 end

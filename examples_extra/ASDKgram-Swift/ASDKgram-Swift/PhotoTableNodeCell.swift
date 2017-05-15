@@ -18,6 +18,7 @@
 
 import Foundation
 import AsyncDisplayKit
+import ASDKFluentExtensions
 
 class PhotoTableNodeCell: ASCellNode {
 	
@@ -49,9 +50,17 @@ class PhotoTableNodeCell: ASCellNode {
 		self.photoDescriptionLabel.attributedText = photoModel.attrStringForDescription(withSize: Constants.CellLayout.FontSize)
 		self.automaticallyManagesSubnodes = true
 	}
-	
-	override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-		
+
+  override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    if FluentExtensions.enableFluentLayout {
+      return fluentLayoutSpecThatFits(constrainedSize)
+    } else {
+      return classicLayoutSpecThatFits(constrainedSize)
+    }
+  }
+
+  func classicLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+
 		// Header Stack
 		
 		var headerChildren: [ASLayoutElement] = []
@@ -81,4 +90,35 @@ class PhotoTableNodeCell: ASCellNode {
 		
 		return verticalStack
 	}
+
+  func fluentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    return ASStackLayoutSpec
+      .vertical()
+      .withChildren([
+        ASStackLayoutSpec()
+          .withAlignItems(.center)
+          .withChildren([
+            avatarImageNode
+              .withPreferredSize(CGSize(width: Constants.CellLayout.UserImageHeight, height: Constants.CellLayout.UserImageHeight))
+              .withInset(Constants.CellLayout.InsetForAvatar),
+            usernameLabel
+              .withFlexShrink(1),
+            ASLayoutSpec.spacer(),
+            timeIntervalLabel
+              .withSpacingBefore(Constants.CellLayout.HorizontalBuffer)
+            ])
+          .withInset(Constants.CellLayout.InsetForHeader),
+
+        photoImageNode.withRatio(1),
+
+        ASStackLayoutSpec
+          .vertical()
+          .withSpacing(Constants.CellLayout.VerticalBuffer)
+          .withChildren([
+            photoLikesLabel,
+            photoDescriptionLabel])
+          .withInset(Constants.CellLayout.InsetForFooter)
+        ])
+  }
+  
 }

@@ -25,6 +25,7 @@
 		3AB33F9E1E22D9DB0039F711 /* PhotoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB33F9D1E22D9DB0039F711 /* PhotoTableViewCell.swift */; };
 		3AB33FA21E230A160039F711 /* NetworkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB33FA11E230A160039F711 /* NetworkImageView.swift */; };
 		3AB33FA41E2337850039F711 /* PhotoTableNodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB33FA31E2337850039F711 /* PhotoTableNodeCell.swift */; };
+		4E0170DA1ECA179F006976B4 /* FluentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E0170D91ECA179F006976B4 /* FluentExtensions.swift */; };
 		7E438240D2C4026931D60594 /* Pods_ASDKgram_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D7D664E4FF432C4AE232A56 /* Pods_ASDKgram_Swift.framework */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		3AB33FA11E230A160039F711 /* NetworkImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkImageView.swift; sourceTree = "<group>"; };
 		3AB33FA31E2337850039F711 /* PhotoTableNodeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoTableNodeCell.swift; sourceTree = "<group>"; };
 		4D7D664E4FF432C4AE232A56 /* Pods_ASDKgram_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ASDKgram_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E0170D91ECA179F006976B4 /* FluentExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FluentExtensions.swift; sourceTree = "<group>"; };
 		A3A86E74A8C3F06D7688AACB /* Pods-ASDKgram-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ASDKgram-Swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-ASDKgram-Swift/Pods-ASDKgram-Swift.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -94,6 +96,7 @@
 				3AB33F721E1F9B650039F711 /* Controllers */,
 				3AB33F5D1E1F94530039F711 /* AppDelegate.swift */,
 				3AB33F821E20E81E0039F711 /* Constants.swift */,
+				4E0170D91ECA179F006976B4 /* FluentExtensions.swift */,
 				3AB33F641E1F94530039F711 /* Assets.xcassets */,
 				3AB33F661E1F94530039F711 /* LaunchScreen.storyboard */,
 				3AB33F691E1F94530039F711 /* Info.plist */,
@@ -350,6 +353,7 @@
 				3AB33F5E1E1F94530039F711 /* AppDelegate.swift in Sources */,
 				3AB33F811E1FDE100039F711 /* Webservice.swift in Sources */,
 				3AB33F9E1E22D9DB0039F711 /* PhotoTableViewCell.swift in Sources */,
+				4E0170DA1ECA179F006976B4 /* FluentExtensions.swift in Sources */,
 				3AB33F861E20E9B10039F711 /* PhotoFeedModel.swift in Sources */,
 				3AB33F881E20ED460039F711 /* PhotoModel.swift in Sources */,
 				3AB33F761E1F9C330039F711 /* PhotoFeedTableViewController.swift in Sources */,
