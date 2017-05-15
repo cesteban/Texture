@@ -16,6 +16,7 @@
 //
 
 import AsyncDisplayKit
+import ASDKFluentExtensions
 
 class OverviewCellNode: ASCellNode {
 
@@ -35,12 +36,29 @@ class OverviewCellNode: ASCellNode {
   }
 
   override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    if FluentExtensions.enableFluentLayout {
+      return fluentLayoutSpecThatFits(constrainedSize)
+    } else {
+      return classicLayoutSpecThatFits(constrainedSize)
+    }
+  }
+
+  func classicLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
     let verticalStackSpec = ASStackLayoutSpec.vertical()
     verticalStackSpec.alignItems = .start
     verticalStackSpec.spacing = 5.0
     verticalStackSpec.children = [titleNode, descriptionNode]
 
     return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 10), child: verticalStackSpec)
+  }
+
+  func fluentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    return ASStackLayoutSpec
+      .vertical()
+      .withAlignItems(.start)
+      .withSpacing(5.0)
+      .withChildren([titleNode, descriptionNode])
+      .withInset(UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 10))
   }
 
 }

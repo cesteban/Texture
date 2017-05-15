@@ -5,4 +5,5 @@ use_frameworks!
 
 target 'Sample' do
 	pod 'Texture', :path => '../..'
+	pod 'ASDKFluentExtensions', '~> 0.4'
 end

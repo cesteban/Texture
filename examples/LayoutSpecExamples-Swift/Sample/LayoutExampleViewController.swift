@@ -34,12 +34,17 @@ class LayoutExampleViewController: ASViewController<ASDisplayNode> {
 
     self.node.layoutSpecBlock = { [weak self] node, constrainedSize in
       guard let customNode = self?.customNode else { return ASLayoutSpec() }
-      return ASCenterLayoutSpec(centeringOptions: needsOnlyYCentering ? .Y : .XY,
-                                sizingOptions: .minimumXY,
-                                child: customNode)
+      if FluentExtensions.enableFluentLayout {
+        return customNode.center(centeringOptions: needsOnlyYCentering ? .Y : .XY,
+                                 sizingOptions: .minimumXY)
+      } else {
+        return ASCenterLayoutSpec(centeringOptions: needsOnlyYCentering ? .Y : .XY,
+                                  sizingOptions: .minimumXY,
+                                  child: customNode)
+      }
     }
   }
-  
+
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }

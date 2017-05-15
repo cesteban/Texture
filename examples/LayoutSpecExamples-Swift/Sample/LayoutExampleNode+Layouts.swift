@@ -16,10 +16,19 @@
 //
 
 import AsyncDisplayKit
+import ASDKFluentExtensions
 
 extension HeaderWithRightAndLeftItems {
 
   override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    if FluentExtensions.enableFluentLayout {
+      return fluentLayoutSpecThatFits(constrainedSize)
+    } else {
+      return classicLayoutSpecThatFits(constrainedSize)
+    }
+  }
+
+  func classicLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
     let nameLocationStack = ASStackLayoutSpec.vertical()
     nameLocationStack.style.flexShrink = 1.0
     nameLocationStack.style.flexGrow = 1.0
@@ -39,11 +48,34 @@ extension HeaderWithRightAndLeftItems {
     return ASInsetLayoutSpec(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10), child: headerStackSpec)
   }
 
+  func fluentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    return ASStackLayoutSpec()
+      .withSpacing(40)
+      .withAlignItems(.center)
+      .withChildren([
+        ASStackLayoutSpec
+          .vertical()
+          .withFlexShrink(1.0)
+          .withFlexGrow(1.0)
+          .withChildren(postLocationNode.attributedText != nil ? [userNameNode, postLocationNode] : [userNameNode]),
+        postTimeNode
+        ])
+      .withInset(UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
+  }
+
 }
 
 extension PhotoWithInsetTextOverlay {
 
   override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    if FluentExtensions.enableFluentLayout {
+      return fluentLayoutSpecThatFits(constrainedSize)
+    } else {
+      return classicLayoutSpecThatFits(constrainedSize)
+    }
+  }
+
+  func classicLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
     let photoDimension: CGFloat = constrainedSize.max.width / 4.0
     photoNode.style.preferredSize = CGSize(width: photoDimension, height: photoDimension)
 
@@ -54,11 +86,24 @@ extension PhotoWithInsetTextOverlay {
     return ASOverlayLayoutSpec(child: photoNode, overlay: textInsetSpec)
   }
 
+  func fluentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    return photoNode
+      .withPreferredSize(CGSize(width: constrainedSize.max.width / 4.0, height: constrainedSize.max.width / 4.0))
+      .withOverlay(titleNode
+        .withInset(UIEdgeInsets(top: CGFloat.infinity, left: 12, bottom: 12, right: 12)))
+  }
 }
 
 extension PhotoWithOutsetIconOverlay {
-
   override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    if FluentExtensions.enableFluentLayout {
+      return fluentLayoutSpecThatFits(constrainedSize)
+    } else {
+      return classicLayoutSpecThatFits(constrainedSize)
+    }
+  }
+
+  func classicLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
     iconNode.style.preferredSize = CGSize(width: 40, height: 40);
     iconNode.style.layoutPosition = CGPoint(x: 150, y: 0);
 
@@ -69,15 +114,34 @@ extension PhotoWithOutsetIconOverlay {
 
     // ASAbsoluteLayoutSpec's .sizing property recreates the behavior of ASDK Layout API 1.0's "ASStaticLayoutSpec"
     absoluteSpec.sizing = .sizeToFit
-
+    
     return absoluteSpec;
   }
 
+  func fluentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    return ASAbsoluteLayoutSpec()
+      .withSizing(.sizeToFit)
+      .withChildren([
+        photoNode
+          .withPreferredSize(CGSize(width: 150, height: 150))
+          .withLayoutPosition(CGPoint(x: 40 / 2.0, y: 40 / 2.0)),
+        iconNode
+          .withPreferredSize(CGSize(width: 40, height: 40))
+          .withLayoutPosition(CGPoint(x: 150, y: 0))])
+  }
 }
 
 extension FlexibleSeparatorSurroundingContent {
 
   override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    if FluentExtensions.enableFluentLayout {
+      return fluentLayoutSpecThatFits(constrainedSize)
+    } else {
+      return classicLayoutSpecThatFits(constrainedSize)
+    }
+  }
+
+  func classicLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
     topSeparator.style.flexGrow = 1.0
     bottomSeparator.style.flexGrow = 1.0
     textNode.style.alignSelf = .center
@@ -88,6 +152,22 @@ extension FlexibleSeparatorSurroundingContent {
     verticalStackSpec.children = [topSeparator, textNode, bottomSeparator]
 
     return ASInsetLayoutSpec(insets:UIEdgeInsets(top: 60, left: 0, bottom: 60, right: 0), child: verticalStackSpec)
+  }
+
+  func fluentLayoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+    return ASStackLayoutSpec
+      .vertical()
+      .withSpacing(20)
+      .withJustifyContent(.center)
+      .withChildren([
+        topSeparator
+          .withFlexGrow(1.0),
+        textNode
+          .withAlignSelf(.center),
+        bottomSeparator
+          .withFlexGrow(1.0)
+        ])
+      .withInset(UIEdgeInsets(top: 60, left: 0, bottom: 60, right: 0))
   }
 
 }
