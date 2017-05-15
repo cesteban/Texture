@@ -10,9 +10,7 @@
 #import "Utilities.h"
 
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
-
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 1
+#import "FluentLayoutFeatureDisabling.h"
 
 static UIEdgeInsets kFeedHeaderInset = { .top = 20, .bottom = 20, .left = 10, .right = 10 };
 

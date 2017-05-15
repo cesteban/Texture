@@ -21,8 +21,8 @@
 
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
 
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 1
+// Set to YES to use the fluent layout API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT NO
 
 #pragma mark - TransitionNode
 

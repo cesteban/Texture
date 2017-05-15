@@ -25,8 +25,8 @@
 
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
 
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 0
+// Set to YES to use the fluent layout API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT NO
 
 #define AVATAR_IMAGE_HEIGHT     30
 #define HORIZONTAL_BUFFER       10

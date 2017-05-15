@@ -22,6 +22,7 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <AsyncDisplayKit/ASDisplayNode+Beta.h>
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+#import "FluentLayoutFeatureDisabling.h"
 
 #import "Utilities.h"
 #import "CommentsNode.h"
@@ -31,9 +32,6 @@
 // There are many ways to format ASLayoutSpec code.  In this example, we offer two different formats:
 // A flatter, more ordinary Objective-C style; or a more structured, "visually" declarative style.
 #define FLAT_LAYOUT 0
-
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 1
 
 #define DEBUG_PHOTOCELL_LAYOUT  0
 

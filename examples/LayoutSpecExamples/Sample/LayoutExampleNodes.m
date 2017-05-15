@@ -15,9 +15,7 @@
 #import "Utilities.h"
 
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
-
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 1
+#import "FluentLayoutFeatureDisabling.h"
 
 @interface HeaderWithRightAndLeftItems ()
 @property (nonatomic, strong) ASTextNode *usernameNode;

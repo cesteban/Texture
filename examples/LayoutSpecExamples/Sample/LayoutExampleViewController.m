@@ -12,9 +12,7 @@
 #import "LayoutExampleNodes.h"
 
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
-
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 1
+#import "FluentLayoutFeatureDisabling.h"
 
 @interface LayoutExampleViewController ()
 @property (nonatomic, strong) LayoutExampleNode *customNode;

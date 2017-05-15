@@ -21,6 +21,7 @@
 /* Begin PBXFileReference section */
 		15AD337503831C4D33FF8B3A /* Pods-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.debug.xcconfig"; sourceTree = "<group>"; };
 		465082D55CCF1B0CB1AEBACC /* libPods-Sample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Sample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EBA2FB71ECA10CB005CD64D /* FluentLayoutFeatureDisabling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FluentLayoutFeatureDisabling.h; sourceTree = "<group>"; };
 		694993CD1C8B334F00491CA5 /* Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		694993D11C8B334F00491CA5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		694993D31C8B334F00491CA5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 				69DCA5241C8BE01F006FF548 /* DetailRootNode.m */,
 				69DCA5261C8BE031006FF548 /* DetailCellNode.h */,
 				69DCA5271C8BE031006FF548 /* DetailCellNode.m */,
+				4EBA2FB71ECA10CB005CD64D /* FluentLayoutFeatureDisabling.h */,
 				694993DC1C8B334F00491CA5 /* Assets.xcassets */,
 				694993D01C8B334F00491CA5 /* Supporting Files */,
 			);

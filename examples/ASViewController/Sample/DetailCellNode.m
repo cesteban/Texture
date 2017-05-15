@@ -18,9 +18,7 @@
 #import "DetailCellNode.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <ASDKFluentExtensions/ASDKFluentExtensions.h>
-
-// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
-#define FLUENT_LAYOUT 0
+#import "FluentLayoutFeatureDisabling.h"
 
 @implementation DetailCellNode
 
