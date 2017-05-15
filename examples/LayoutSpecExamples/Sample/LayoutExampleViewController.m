@@ -11,6 +11,11 @@
 #import "LayoutExampleViewController.h"
 #import "LayoutExampleNodes.h"
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
+
 @interface LayoutExampleViewController ()
 @property (nonatomic, strong) LayoutExampleNode *customNode;
 @end
@@ -36,10 +41,15 @@
     
     __weak __typeof(self) weakself = self;
     self.node.layoutSpecBlock = ^ASLayoutSpec*(__kindof ASDisplayNode * _Nonnull node, ASSizeRange constrainedSize) {
-      return [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:needsOnlyYCentering ? ASCenterLayoutSpecCenteringY : ASCenterLayoutSpecCenteringXY
-                                                        sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY
-                                                                child:weakself.customNode];
-      };
+      if (FLUENT_LAYOUT) {
+        return [weakself.customNode centerWithCenteringOptions:needsOnlyYCentering ? ASCenterLayoutSpecCenteringY : ASCenterLayoutSpecCenteringXY
+                                                 sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY];
+      } else {
+        return [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:needsOnlyYCentering ? ASCenterLayoutSpecCenteringY : ASCenterLayoutSpecCenteringXY
+                                                          sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY
+                                                                  child:weakself.customNode];
+      }
+    };
   }
   
   return self;

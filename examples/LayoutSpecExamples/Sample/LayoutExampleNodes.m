@@ -14,6 +14,11 @@
 
 #import "Utilities.h"
 
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
+
 @interface HeaderWithRightAndLeftItems ()
 @property (nonatomic, strong) ASTextNode *usernameNode;
 @property (nonatomic, strong) ASTextNode *postLocationNode;
@@ -81,24 +86,50 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
 
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   ASStackLayoutSpec *nameLocationStack = [ASStackLayoutSpec verticalStackLayoutSpec];
   nameLocationStack.style.flexShrink = 1.0;
   nameLocationStack.style.flexGrow = 1.0;
-  
+
   if (_postLocationNode.attributedText) {
     nameLocationStack.children = @[_usernameNode, _postLocationNode];
   } else {
     nameLocationStack.children = @[_usernameNode];
   }
-  
+
   ASStackLayoutSpec *headerStackSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                                spacing:40
                                                                         justifyContent:ASStackLayoutJustifyContentStart
                                                                             alignItems:ASStackLayoutAlignItemsCenter
                                                                               children:@[nameLocationStack, _postTimeNode]];
-  
+
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 10, 0, 10) child:headerStackSpec];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[[[[ASStackLayoutSpec
+              horizontalStackLayoutSpec]
+              withSpacing:40]
+              withAlignItems:ASStackLayoutAlignItemsCenter]
+              withChildren:@[
+                             [[[[ASStackLayoutSpec
+                                 verticalStackLayoutSpec]
+                                 withFlexGrow:1.0]
+                                 withFlexShrink:1.0]
+                                 withChildren:_postLocationNode.attributedText ? @[_usernameNode, _postLocationNode] : @[_usernameNode]
+                              ],
+                             _postTimeNode
+                             ]]
+              withInset:UIEdgeInsetsMake(0, 10, 0, 10)];
 }
 
 @end
@@ -124,7 +155,7 @@
     self.backgroundColor = [UIColor clearColor];
     
     _photoNode = [[ASNetworkImageNode alloc] init];
-    _photoNode.URL = [NSURL URLWithString:@"http://asyncdisplaykit.org/static/images/layout-examples-photo-with-inset-text-overlay-photo.png"];
+    _photoNode.URL = [NSURL URLWithString:@"http://texturegroup.org/static/images/layout-examples-photo-with-inset-text-overlay-photo.png"];
     _photoNode.willDisplayNodeContentWithRenderingContext = ^(CGContextRef context, id drawParameters) {
       CGRect bounds = CGContextGetClipBoundingBox(context);
       [[UIBezierPath bezierPathWithRoundedRect:bounds cornerRadius:10] addClip];
@@ -142,14 +173,31 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   CGFloat photoDimension = constrainedSize.max.width / 4.0;
   _photoNode.style.preferredSize = CGSizeMake(photoDimension, photoDimension);
 
   // INFINITY is used to make the inset unbounded
   UIEdgeInsets insets = UIEdgeInsetsMake(INFINITY, 12, 12, 12);
   ASInsetLayoutSpec *textInsetSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:insets child:_titleNode];
-  
+
   return [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_photoNode overlay:textInsetSpec];;
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[_photoNode
+           withPreferredSize:CGSizeMake(constrainedSize.max.width / 4.0, constrainedSize.max.width / 4.0)]
+           withOverlay:[_titleNode
+                        withInset:UIEdgeInsetsMake(INFINITY, 12, 12, 12)]];
 }
 
 @end
@@ -168,10 +216,10 @@
   
   if (self) {
     _photoNode = [[ASNetworkImageNode alloc] init];
-    _photoNode.URL = [NSURL URLWithString:@"http://asyncdisplaykit.org/static/images/layout-examples-photo-with-outset-icon-overlay-photo.png"];
+    _photoNode.URL = [NSURL URLWithString:@"http://texturegroup.org/static/images/layout-examples-photo-with-outset-icon-overlay-photo.png"];
     
     _iconNode = [[ASNetworkImageNode alloc] init];
-    _iconNode.URL = [NSURL URLWithString:@"http://asyncdisplaykit.org/static/images/layout-examples-photo-with-outset-icon-overlay-icon.png"];
+    _iconNode.URL = [NSURL URLWithString:@"http://texturegroup.org/static/images/layout-examples-photo-with-outset-icon-overlay-icon.png"];
     
     [_iconNode setImageModificationBlock:^UIImage *(UIImage *image) {   // FIXME: in framework autocomplete for setImageModificationBlock line seems broken
       CGSize profileImageSize = CGSizeMake(60, 60);
@@ -184,21 +232,45 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   _iconNode.style.preferredSize = CGSizeMake(40, 40);
   _iconNode.style.layoutPosition = CGPointMake(150, 0);
-  
+
   _photoNode.style.preferredSize = CGSizeMake(150, 150);
   _photoNode.style.layoutPosition = CGPointMake(40 / 2.0, 40 / 2.0);
-  
+
   ASAbsoluteLayoutSpec *absoluteSpec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithChildren:@[_photoNode, _iconNode]];
-  
+
   // ASAbsoluteLayoutSpec's .sizing property recreates the behavior of ASDK Layout API 1.0's "ASStaticLayoutSpec"
   absoluteSpec.sizing = ASAbsoluteLayoutSpecSizingSizeToFit;
-  
+
   return absoluteSpec;
 }
 
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  // The ASAbsoluteLayoutSpec has no fluent extensions, since they won't add anything to the current construction syntax.
+  // However, note how the spec still benefits from the possibility of inlining style modifications directly in the
+  // specification of the children array.
+  return [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit
+                                                   children:@[
+                                                              [[_photoNode
+                                                                withPreferredSize:CGSizeMake(150, 150)]
+                                                               withLayoutPosition:CGPointMake(40 / 2.0, 40 / 2.0)],
 
+                                                              [[_iconNode
+                                                                withPreferredSize:CGSizeMake(40, 40)]
+                                                                withLayoutPosition:CGPointMake(150, 0)]
+                                                              ]];
+}
 
 @end
 
@@ -239,16 +311,39 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
   _topSeparator.style.flexGrow = 1.0;
   _bottomSeparator.style.flexGrow = 1.0;
   _textNode.style.alignSelf = ASStackLayoutAlignSelfCenter;
-  
+
   ASStackLayoutSpec *verticalStackSpec = [ASStackLayoutSpec verticalStackLayoutSpec];
   verticalStackSpec.spacing = 20;
   verticalStackSpec.justifyContent = ASStackLayoutJustifyContentCenter;
   verticalStackSpec.children = @[_topSeparator, _textNode, _bottomSeparator];
 
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(60, 0, 60, 0) child:verticalStackSpec];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[[[[ASStackLayoutSpec
+              verticalStackLayoutSpec]
+              withSpacing:20]
+              withJustifyContent:ASStackLayoutJustifyContentCenter]
+              withChildren:@[
+                             [_topSeparator withFlexGrow:1.0],
+                             [_textNode alignSelf:ASStackLayoutAlignSelfCenter],
+                             [_bottomSeparator withFlexGrow:1.0]
+                             ]]
+              withInset:UIEdgeInsetsMake(60, 0, 60, 0)];
 }
 
 @end

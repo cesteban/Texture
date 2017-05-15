@@ -11,6 +11,10 @@
 #import "OverviewCellNode.h"
 #import "LayoutExampleNodes.h"
 #import "Utilities.h"
+#import <ASDKFluentExtensions/ASDKFluentExtensions.h>
+
+// A different way to write layout code: using the fluent API provided by ASDKFluentExtensions
+#define FLUENT_LAYOUT 1
 
 @interface OverviewCellNode ()
 @property (nonatomic, strong) ASTextNode *titleNode;
@@ -42,12 +46,31 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize
 {
-    ASStackLayoutSpec *verticalStackSpec = [ASStackLayoutSpec verticalStackLayoutSpec];
-    verticalStackSpec.alignItems = ASStackLayoutAlignItemsStart;
-    verticalStackSpec.spacing = 5.0;
-    verticalStackSpec.children = @[self.titleNode, self.descriptionNode];
-    
-    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(10, 16, 10, 10) child:verticalStackSpec];
+  if (FLUENT_LAYOUT) {
+    return [self fluentLayoutSpecThatFits:constrainedSize];
+  } else {
+    return [self classicLayoutSpecThatFits:constrainedSize];
+  }
+}
+
+- (ASLayoutSpec *)classicLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  ASStackLayoutSpec *verticalStackSpec = [ASStackLayoutSpec verticalStackLayoutSpec];
+  verticalStackSpec.alignItems = ASStackLayoutAlignItemsStart;
+  verticalStackSpec.spacing = 5.0;
+  verticalStackSpec.children = @[self.titleNode, self.descriptionNode];
+
+  return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(10, 16, 10, 10) child:verticalStackSpec];
+}
+
+- (ASLayoutSpec *)fluentLayoutSpecThatFits:(ASSizeRange)constrainedSize
+{
+  return [[[[[ASStackLayoutSpec
+              verticalStackLayoutSpec]
+              withAlignItems:ASStackLayoutAlignItemsStart]
+              withSpacing:5.0]
+              withChildren:@[self.titleNode, self.descriptionNode]]
+              withInset:UIEdgeInsetsMake(10, 10, 10, 10)];
 }
 
 @end
