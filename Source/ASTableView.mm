@@ -1750,6 +1750,10 @@ static NSString * const kCellReuseIdentifier = @"_ASTableViewCell";
 - (BOOL)dataController:(ASDataController *)dataController presentedSizeForElement:(ASCollectionElement *)element matchesSize:(CGSize)size
 {
   NSIndexPath *indexPath = [self indexPathForNode:element.node];
+  if (indexPath == nil) {
+    ASDisplayNodeFailAssert(@"Data controller should not ask for presented size for element that is not presented.");
+    return YES;
+  }
   CGRect rect = [self rectForRowAtIndexPath:indexPath];
   
   /**
@@ -1827,21 +1831,6 @@ static NSString * const kCellReuseIdentifier = @"_ASTableViewCell";
 {
   [_cellsForLayoutUpdates addObject:node];
   [self setNeedsLayout];
-}
-
-- (void)nodeDidRelayout:(ASCellNode *)node sizeChanged:(BOOL)sizeChanged
-{
-  ASDisplayNodeAssertMainThread();
-
-  if (!sizeChanged || _queuedNodeHeightUpdate || _remeasuringCellNodes) {
-    return;
-  }
-
-  _queuedNodeHeightUpdate = YES;
-  [self performSelector:@selector(requeryNodeHeights)
-             withObject:nil
-             afterDelay:0
-                inModes:@[ NSRunLoopCommonModes ]];
 }
 
 // Cause UITableView to requery for the new height of this node
