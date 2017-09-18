@@ -382,6 +382,14 @@ typedef enum {
       }
     }
 
+    if (foundItemCount == 0) {
+      // If _internalQueue holds weak references, and all of them just become NULL, then the array
+      // is never marked as needsCompletion, and compact will return early, not removing the NULL's.
+      // Inserting a NULL here ensures the compaction will take place.
+      // See http://www.openradar.me/15396578 and https://stackoverflow.com/a/40274426/1136669
+      [_internalQueue addPointer:NULL];
+    }
+
     [_internalQueue compact];
     if (_internalQueue.count == 0) {
       isQueueDrained = YES;
